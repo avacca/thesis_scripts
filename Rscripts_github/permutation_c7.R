@@ -16,7 +16,7 @@ difference_matrix<-function(w,mino){ #compute the difference tp1 -tp2 between ge
    }
   return(mx)	}
 
-create_sig_mx <- function(a,aa){ #count in how many datasets the difference between gene 1 and gene 2 is negative or positive, assign the sign + if 
+create_sig_mx <- function(a,aa){ #count in how many datasets the difference between gene 1 and gene 2 is negative or positive, assign the sign + if the majority of the datasets has positive difference and - if they have negative difference
 sigmatrix<-matrix(NA,nrow=length(a),ncol=length(a))
 colnames(sigmatrix)<-a
 rownames(sigmatrix)<-a
