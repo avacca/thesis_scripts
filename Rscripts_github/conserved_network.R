@@ -8,8 +8,8 @@ difference_matrix<-function(w,mino){ #compute the difference tp1 -tp2 between ge
    	for(i in 1:length(mino$gene_name)){
      		for(j in 1:length(mino$gene_name)){
        			if(j>=i){
-         			indi<-mino[i,]$shuffled
-         			indj<-mino[j,]$shuffled
+         			indi<-mino[i,]$tp
+         			indj<-mino[j,]$tp
          			mx[as.vector(mino[i,]$gene_name),as.vector(mino[j,]$gene_name)]=indi-indj;
  				mx[as.vector(mino[j,]$gene_name),as.vector(mino[i,]$gene_name)]=indj-indi}
        }
@@ -69,6 +69,7 @@ return(sx)
 }
 ###
 args<-commandArgs(trailingOnly = TRUE)
+
 library(plyr)
 
 r<-read.table("all_RNAs_tp_log2FC_dataframe_allpeakinggenes_onlyfirstpeakingtime_alldatasets_nomitochondrialgenes.txt",sep="\t",h=T)
@@ -94,27 +95,26 @@ w<-w[w$gene_name!="7SK",]
 w<-as.vector(w$gene_name)
 
 
-t <- as.numeric(Sys.time())
-seed <- 1e8 * (t - floor(t))
-set.seed(seed); print(seed)
-
-sigmatrix<-NULL
-cgc<-NULL
 bb<-NULL
-mx<-NULL
-gc7<-NULL
- ptm <- proc.time()
- for (m in 1:args[1]){
- 	for (j in 1:8){
- 		minoar[[j]]$shuffled<-sample(minoar[[j]]$tp)
- 		minoar[[j]]<-minoar[[j]][minoar[[j]]$gene_name %in% as.vector(w),]
- 		bb[[j]]<-difference_matrix(as.vector(w),minoar[[j]])
- 	 	bb[[j]][is.na(bb[[j]])]<-0}
- 	sgx<-create_sig_mx(as.vector(w),bb)
- 	c_matrix7<-create_connectivity_mx(as.vector(w),sgx,7)
- 	gc7<-c(gc7,sum(c_matrix7))
- }
+sigmatrix<-NULL
 
- proc.time() - ptm
- 
- write.table(gc7,file=paste(seed,"seed_conservedorderconnections.txt",sep=""),sep="\t",quote=F,col.names=F,row.names=F)
+for (j in 1:8){
+  		minoar[[j]]<-minoar[[j]][minoar[[j]]$gene_name %in% as.vector(w),]
+  		bb[[j]]<-difference_matrix(as.vector(w),minoar[[j]])
+  	 	bb[[j]][is.na(bb[[j]])]<-0}
+  	 	
+m<-create_sig_mx(w,bb)
+mm<-create_connectivity_mx (w,m,args[1])
+print(sum(mm),"conserved order connections between the",length(w),"genes",sep="\t")
+
+save(mm,file="connectivitymatrix_atleast7_nomitochondrialgenes_nomultigenefamilies.Rdata")
+
+
+
+#plot the network
+pdf("connectivity_network_atleast7_nomitochondrialgenPC_RNA.pdf",width=12)
+am.graph<-new("graphAM", adjMat=mm, edgemode="directed")
+nAttrs <-makeNodeAttrs(am.graphar, fontsize=35)
+attrs <- list(node = list(color="transparent",fillcolor = "transparent", height = "1.5", width = "2"),edge = list(arrowsize=1.3,color="grey"))
+plot(am.graphar, nodeAttrs=nAttrs, attrs=attrs)
+dev.off()
