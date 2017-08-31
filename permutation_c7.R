@@ -1,7 +1,7 @@
 #/usr/bin/Rscript
 
 ###
-difference_matrix<-function(w,mino){
+difference_matrix<-function(w,mino){ #compute the difference tp1 -tp2 between gene 1 and gene2 pairwise across all the genes in the list w , in the matrix mino
   	mx<-matrix(0,nrow=length(w),ncol=length(w))
   	colnames(mx)<-w
   	rownames(mx)<-w
@@ -16,7 +16,7 @@ difference_matrix<-function(w,mino){
    }
   return(mx)	}
 
-create_sig_mx <- function(a,aa){
+create_sig_mx <- function(a,aa){ #count in how many datasets the difference between gene 1 and gene 2 is negative or positive, assign the sign + if 
 sigmatrix<-matrix(NA,nrow=length(a),ncol=length(a))
 colnames(sigmatrix)<-a
 rownames(sigmatrix)<-a
