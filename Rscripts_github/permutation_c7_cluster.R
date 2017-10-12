@@ -1,3 +1,6 @@
+#/usr/bin/Rscript
+
+
 difference_matrix<-function(w,mino){ #compute the difference tp1 -tp2 between gene 1 and gene2 pairwise across all the genes in the list w , in the matrix mino
 
   	mx<-matrix(0,nrow=length(w),ncol=length(w))
@@ -137,8 +140,8 @@ args<-commandArgs(trailingOnly = TRUE)
 library(plyr)
 
 
-allpeakPC<-read.table("/Users/s1478067/Desktop/R_NSCage5/new_results/all_tp_log2FC/all_PCs_tp_log2FC_dataframe_allpeakinggenes_alldatasets_nomitochondrialgenes.txt", sep="\t",h=T)
-allpeakRNA<-read.table("/Users/s1478067/Desktop/R_NSCage5/new_results/all_tp_log2FC/all_RNAs_tp_log2FC_dataframe_allpeakinggenes_alldatasets_nomitochondrialgenes_nogenefamilies.txt", sep="\t",h=T)
+allpeakPC<-read.table("all_PCs_tp_log2FC_dataframe_allpeakinggenes_alldatasets_nomitochondrialgenes.txt", sep="\t",h=T)
+allpeakRNA<-read.table("all_RNAs_tp_log2FC_dataframe_allpeakinggenes_alldatasets_nomitochondrialgenes_nogenefamilies.txt", sep="\t",h=T)
 
 
 
@@ -159,7 +162,7 @@ minoar8<-ar[ar$dataset=="SAOS2_OST",][order(ar[ar$dataset=="SAOS2_OST",3]),]
 
 
 
-war<-count(unique(ar[,c(3,5)]), "gene_name")
+war<-count(unique(ar[,c(3,19)]), "gene_name")
 w<-war[war$freq>=7,]$gene_name
 
 
@@ -199,7 +202,7 @@ minoar8<-ar[ar$dataset=="SAOS2_OST",][order(ar[ar$dataset=="SAOS2_OST",3]),]
 
 
 
-war<-count(unique(ar[,c(3,5)]), "gene_name")
+war<-count(unique(ar[,c(3,19)]), "gene_name")
 w<-war[war$freq>=7,]$gene_name 
  
  
@@ -235,7 +238,7 @@ minoar[[j]]<-minoar[[j]][minoar[[j]]$gene_name %in% as.vector(w),]
  }
 
  proc.time() - ptm
-
+ write.table(gc7,file=paste(seed,"seed_conservedorderconnections.txt",sep=""),sep="\t",quote=F,col.names=F,row.names=F)
 
 
 
